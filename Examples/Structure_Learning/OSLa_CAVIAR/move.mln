@@ -1,0 +1,59 @@
+// ----------------------------------------------------------------------------
+// --- Domain definitions
+//
+// time: the domain of time-points
+// fluent: the domain of fluent, that is composite events (CE)
+// event: the domain of events, that is the input simple, derived events (SDE)
+// id: domain entities, e.g. persons or objects
+// ----------------------------------------------------------------------------
+
+// Query Predicates:
+HoldsAt(fluent, time)
+
+// Template Predicates:
+InitiatedAt(fluent, time)
+TerminatedAt(fluent, time)
+
+// Evidence Predicates (closed-world assumption):
+Happens(event, time)
+Close(id, id, distance, time)
+OrientationMove(id, id, time)
+Next(time, time)
+StartTime(time)
+
+// Function definitions for simple, derived events (SDE):
+event enter(id)
+event exit(id)
+event walking(id)
+event running(id)
+event active(id)
+event inactive(id)
+
+// Function definitions for composite events (CE):
+fluent move(id, id)
+
+// ----------------------------------------------------------------------------
+// --- Probabilistic Event Calculus (domain-independent axioms)
+// ----------------------------------------------------------------------------
+
+// When a fluent holds:
+Next(t1, t0) ^ InitiatedAt(f, t0) => HoldsAt(f, t1)
+
+// When a fluent does not hold:
+Next(t1, t0) ^ TerminatedAt(f, t0) => !HoldsAt(f, t1)
+
+// The inertia of holdsAt, i.e. a fluent continues to hold unless it is terminated:
+Next(t1, t0) ^ HoldsAt(f, t0) ^ !TerminatedAt(f, t0) => HoldsAt(f, t1).
+
+// The inertia of !holdsAt, i.e. a fluent continues not to hold unless it is initiated:
+Next(t1, t0) ^ !HoldsAt(f, t0) ^ !InitiatedAt(f, t0) => !HoldsAt(f, t1).
+
+// ----------------------------------------------------------------------------
+// --- Other domain-dependent rules
+// ----------------------------------------------------------------------------
+
+// --- The moving CE cannot performed by a single person:
+!HoldsAt(move(p, p), t).
+
+// --- Initially nothing holds
+StartTime(t) => !HoldsAt(f, t).

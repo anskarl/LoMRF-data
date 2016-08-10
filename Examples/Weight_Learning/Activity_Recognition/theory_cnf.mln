@@ -1,0 +1,112 @@
+// Predicate definitions
+Happens(event,time)
+StartTime(time)
+InitiatedAt(fluent,time)
+TerminatedAt(fluent,time)
+OrientationMove(id,id,time)
+Close(id,id,distance,time)
+HoldsAt(fluent,time)
+Next(time, time)
+
+// Function definitions
+event active(id)
+fluent meet(id,id)
+event enter(id)
+fluent move(id,id)
+event running(id)
+event walking(id)
+event inactive(id)
+event exit(id)
+
+
+// Clauses
+
+// Source formula: HoldsAt(meet(p1, p2),t) ^ !((Happens(walking(p1),t) ^ !Close(p1,p2,34,t)) v Happens(running(p1),t) v (Happens(walking(p2),t) ^ !Close(p2,p1,34,t)) v Happens(exit(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t)) => HoldsAt(meet(p1, p2),succ(t)).
+Happens(walking(p2),t) v !HoldsAt(meet(p1, p2),t) v Happens(exit(p1),t) v HoldsAt(meet(p1, p2),succ(t)) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t).
+Happens(walking(p2),t) v !HoldsAt(meet(p1, p2),t) v Happens(exit(p1),t) v HoldsAt(meet(p1, p2),succ(t)) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t).
+!HoldsAt(meet(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v HoldsAt(meet(p1, p2),succ(t)) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t).
+!HoldsAt(meet(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v HoldsAt(meet(p1, p2),succ(t)) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t).
+
+// Source formula: !HoldsAt(meet(p, p),t).
+!HoldsAt(meet(p, p),t).
+
+// Source formula: (Happens(active(p1),t) ^ !Happens(running(p2),t) ^ Close(p1,p2,25,t)) v (Happens(inactive(p1),t) ^ !Happens(running(p2),t) ^ !Happens(active(p2),t) ^ Close(p1,p2,25,t)) => HoldsAt(meet(p1, p2),succ(t))
+!Happens(active(p1),t) v Happens(running(p2),t) v !Close(p1,p2,25,t) v HoldsAt(meet(p1, p2),succ(t))
+Happens(active(p2),t) v !Happens(inactive(p1),t) v !Close(p1,p2,25,t) v HoldsAt(meet(p1, p2),succ(t)) v Happens(running(p2),t)
+
+// Source formula: !HoldsAt(meet(p1, p2),t) ^ !((Happens(active(p1),t) ^ !Happens(running(p2),t) ^ Close(p1,p2,25,t)) v (Happens(inactive(p1),t) ^ !Happens(running(p2),t) ^ !Happens(active(p2),t) ^ Close(p1,p2,25,t))) => !HoldsAt(meet(p1, p2),succ(t)).
+HoldsAt(meet(p1, p2),t) v !Happens(running(p2),t) v Close(p1,p2,25,t) v !HoldsAt(meet(p1, p2),succ(t)).
+HoldsAt(meet(p1, p2),t) v Happens(active(p1),t) v !Happens(running(p2),t) v !HoldsAt(meet(p1, p2),succ(t)).
+HoldsAt(meet(p1, p2),t) v Close(p1,p2,25,t) v !HoldsAt(meet(p1, p2),succ(t)).
+HoldsAt(meet(p1, p2),t) v Close(p1,p2,25,t) v Happens(inactive(p1),t) v !HoldsAt(meet(p1, p2),succ(t)).
+HoldsAt(meet(p1, p2),t) v Happens(active(p1),t) v !Happens(active(p2),t) v !HoldsAt(meet(p1, p2),succ(t)).
+HoldsAt(meet(p1, p2),t) v !Happens(running(p2),t) v Happens(inactive(p1),t) v !HoldsAt(meet(p1, p2),succ(t)).
+HoldsAt(meet(p1, p2),t) v !Happens(running(p2),t) v !Happens(active(p2),t) v !HoldsAt(meet(p1, p2),succ(t)).
+HoldsAt(meet(p1, p2),t) v Happens(active(p1),t) v Happens(inactive(p1),t) v !HoldsAt(meet(p1, p2),succ(t)).
+HoldsAt(meet(p1, p2),t) v Happens(active(p1),t) v Close(p1,p2,25,t) v !HoldsAt(meet(p1, p2),succ(t)).
+HoldsAt(meet(p1, p2),t) v Close(p1,p2,25,t) v !Happens(active(p2),t) v !HoldsAt(meet(p1, p2),succ(t)).
+HoldsAt(meet(p1, p2),t) v !Happens(running(p2),t) v !HoldsAt(meet(p1, p2),succ(t)).
+
+// Source formula: Happens(walking(p1),t) ^ Happens(walking(p2),t) ^ OrientationMove(p1,p2,t) ^ Close(p1,p2,34,t) => HoldsAt(move(p1, p2),succ(t))
+!Happens(walking(p2),t) v HoldsAt(move(p1, p2),succ(t)) v !OrientationMove(p1,p2,t) v !Happens(walking(p1),t) v !Close(p1,p2,34,t)
+
+// Source formula: (Happens(active(p1),t) ^ Happens(inactive(p2),t)) v (Happens(walking(p1),t) ^ !Close(p1,p2,34,t)) v Happens(running(p1),t) v (Happens(active(p1),t) ^ Happens(active(p2),t)) v (Happens(walking(p2),t) ^ !Close(p2,p1,34,t)) v Happens(exit(p1),t) v Happens(running(p2),t) v (Happens(active(p2),t) ^ Happens(inactive(p1),t)) v Happens(exit(p2),t) => !HoldsAt(move(p1, p2),succ(t))
+!Happens(walking(p1),t) v Close(p1,p2,34,t) v !HoldsAt(move(p1, p2),succ(t))
+!Happens(exit(p2),t) v !HoldsAt(move(p1, p2),succ(t))
+!Happens(active(p2),t) v !Happens(inactive(p1),t) v !HoldsAt(move(p1, p2),succ(t))
+!Happens(active(p1),t) v !Happens(active(p2),t) v !HoldsAt(move(p1, p2),succ(t))
+!Happens(exit(p1),t) v !HoldsAt(move(p1, p2),succ(t))
+!Happens(running(p1),t) v !HoldsAt(move(p1, p2),succ(t))
+!Happens(running(p2),t) v !HoldsAt(move(p1, p2),succ(t))
+!Happens(walking(p2),t) v Close(p2,p1,34,t) v !HoldsAt(move(p1, p2),succ(t))
+!Happens(active(p1),t) v !Happens(inactive(p2),t) v !HoldsAt(move(p1, p2),succ(t))
+
+// Source formula: HoldsAt(move(p1, p2),t) ^ !((Happens(active(p1),t) ^ Happens(inactive(p2),t)) v (Happens(walking(p1),t) ^ !Close(p1,p2,34,t)) v Happens(running(p1),t) v (Happens(active(p1),t) ^ Happens(active(p2),t)) v (Happens(walking(p2),t) ^ !Close(p2,p1,34,t)) v Happens(exit(p1),t) v Happens(running(p2),t) v (Happens(active(p2),t) ^ Happens(inactive(p1),t)) v Happens(exit(p2),t)) => HoldsAt(move(p1, p2),succ(t)).
+Happens(active(p2),t) v Happens(walking(p2),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v Happens(exit(p1),t) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(inactive(p2),t).
+Happens(walking(p2),t) v Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v Happens(exit(p1),t) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t).
+Happens(active(p2),t) v Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(inactive(p2),t).
+Happens(walking(p2),t) v Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v Happens(exit(p1),t) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t) v Happens(inactive(p2),t).
+Happens(active(p2),t) v Happens(walking(p2),t) v Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v Happens(exit(p1),t) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t).
+Happens(active(p2),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t) v Happens(inactive(p2),t).
+Happens(active(p2),t) v Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t).
+Happens(active(p2),t) v Happens(walking(p2),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v Happens(exit(p1),t) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t).
+Happens(active(p2),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(inactive(p2),t).
+Happens(active(p2),t) v Happens(walking(p2),t) v Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v Happens(exit(p1),t) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(inactive(p2),t).
+Happens(active(p2),t) v Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(inactive(p2),t).
+Happens(active(p2),t) v Happens(walking(p2),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v Happens(exit(p1),t) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t) v Happens(inactive(p2),t).
+Happens(active(p2),t) v Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t).
+Happens(active(p2),t) v Happens(walking(p2),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v Happens(exit(p1),t) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(inactive(p2),t).
+Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t) v Happens(inactive(p2),t).
+Happens(active(p2),t) v Happens(walking(p2),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v Happens(exit(p1),t) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t).
+Happens(active(p2),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t) v Happens(inactive(p2),t).
+Happens(walking(p2),t) v Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v Happens(exit(p1),t) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t).
+Happens(active(p2),t) v Happens(walking(p2),t) v Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v Happens(exit(p1),t) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t).
+Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t).
+Happens(active(p2),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(inactive(p2),t).
+Happens(active(p2),t) v Happens(walking(p2),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v Happens(exit(p1),t) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t) v Happens(inactive(p2),t).
+Happens(active(p2),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t).
+Happens(walking(p2),t) v Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v Happens(exit(p1),t) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t) v Happens(inactive(p2),t).
+Happens(active(p2),t) v Happens(walking(p2),t) v Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v Happens(exit(p1),t) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(inactive(p2),t).
+Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t) v Happens(inactive(p2),t).
+Happens(active(p2),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v Happens(running(p1),t) v !Close(p1,p2,34,t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t).
+Happens(inactive(p1),t) v HoldsAt(move(p1, p2),succ(t)) v !HoldsAt(move(p1, p2),t) v !Close(p2,p1,34,t) v Happens(exit(p1),t) v Happens(running(p1),t) v Happens(walking(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t) v Happens(active(p1),t).
+
+// Source formula: !HoldsAt(move(p1, p2),t) ^ !(Happens(walking(p1),t) ^ Happens(walking(p2),t) ^ OrientationMove(p1,p2,t) ^ Close(p1,p2,34,t)) => !HoldsAt(move(p1, p2),succ(t)).
+HoldsAt(move(p1, p2),t) v Happens(walking(p1),t) v !HoldsAt(move(p1, p2),succ(t)).
+HoldsAt(move(p1, p2),t) v Happens(walking(p2),t) v !HoldsAt(move(p1, p2),succ(t)).
+HoldsAt(move(p1, p2),t) v OrientationMove(p1,p2,t) v !HoldsAt(move(p1, p2),succ(t)).
+HoldsAt(move(p1, p2),t) v Close(p1,p2,34,t) v !HoldsAt(move(p1, p2),succ(t)).
+
+// Source formula: !HoldsAt(move(p, p),t).
+!HoldsAt(move(p, p),t).
+
+// Source formula: StartTime(t) => !HoldsAt(f,t).
+!StartTime(t) v !HoldsAt(f,t).
+
+// Source formula: (Happens(walking(p1),t) ^ !Close(p1,p2,34,t)) v Happens(running(p1),t) v (Happens(walking(p2),t) ^ !Close(p2,p1,34,t)) v Happens(exit(p1),t) v Happens(running(p2),t) v Happens(exit(p2),t) => !HoldsAt(meet(p1, p2),succ(t))
+!Happens(walking(p1),t) v Close(p1,p2,34,t) v !HoldsAt(meet(p1, p2),succ(t))
+!Happens(exit(p1),t) v !HoldsAt(meet(p1, p2),succ(t))
+!Happens(running(p2),t) v !HoldsAt(meet(p1, p2),succ(t))
+!Happens(exit(p2),t) v !HoldsAt(meet(p1, p2),succ(t))
+!Happens(running(p1),t) v !HoldsAt(meet(p1, p2),succ(t))
+!Happens(walking(p2),t) v Close(p2,p1,34,t) v !HoldsAt(meet(p1, p2),succ(t))

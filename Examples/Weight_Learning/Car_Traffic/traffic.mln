@@ -1,0 +1,44 @@
+// Domain
+state = {Stop, Drive, Slow}
+obs = {Red, Green, Yellow}
+time = {0,...,10}
+
+State(state, time)
+Obs(obs, time)
+
+// At each step there is exactly one state and one observation
+
+State(s0, t) ^ !(s0 = s1) => !State(s1, t)
+
+Obs(o0, t) ^ !(o0 = o1) => !Obs(o1, t)
+
+// Probability of starting state
+State(Stop, 0)
+State(Drive, 0)
+State(Slow, 0)
+
+// Transition probabilities
+State(Stop, t) => State(Stop, t++)
+State(Stop, t) => State(Drive, t++)
+State(Stop, t) => State(Slow, t++)
+
+State(Drive, t) => State(Stop, t++)
+State(Drive, t) => State(Drive, t++)
+State(Drive, t) => State(Slow, t++)
+
+State(Slow, t) => State(Stop, t++)
+State(Slow, t) => State(Drive, t++)
+State(Slow, t) => State(Slow, t++)
+
+// Output probabilities
+Obs(Red, t) => State(Stop, t)
+Obs(Red, t) => State(Drive, t)
+Obs(Red, t) => State(Slow, t)
+
+Obs(Green, t) => State(Stop, t)
+Obs(Green, t) => State(Drive, t)
+Obs(Green, t) => State(Slow, t)
+
+Obs(Yellow, t) => State(Stop, t)
+Obs(Yellow, t) => State(Drive, t)
+Obs(Yellow, t) => State(Slow, t)

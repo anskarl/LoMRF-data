@@ -1,0 +1,16 @@
+// Modes declarations for predicates
+modeP(2, Happens(-,+))
+modeP(0, HoldsAt(+,+))
+modeP(0, Next(-,+))
+modeP(1, OrientationMove(.,.,+))
+modeP(0, StartTime(+))
+modeP(1, Close(.,.,#.,+))
+
+// Mode declarations for functions
+modeF(2, inactive(.))
+modeF(2, walking(.))
+modeF(2, active(.))
+modeF(0, running(.))
+modeF(1, move(.,.))
+modeF(2, enter(.))
+modeF(2, exit(.))

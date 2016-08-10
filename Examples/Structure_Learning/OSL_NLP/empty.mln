@@ -1,0 +1,17 @@
+// Predicate definitions
+Token(token,position,bib)
+FollowBy(bib,position,token)
+Next(position,position)
+LessThan(position,position)
+IsAlphaChar(token)
+IsDate(token)
+IsDigit(token)
+FirstNonAuthorTitleTkn(bib,position)
+FirstIn(bib,position)
+LastInitial(bib,position)
+Center(bib,position)
+HasPunc(bib,position)
+HasComma(bib,position)
+
+// Non-Evidence
+InField(bib,field,position)
