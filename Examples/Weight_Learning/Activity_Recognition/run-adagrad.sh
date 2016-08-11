@@ -1,6 +1,7 @@
 #!/bin/bash
 
-lomrf-wlearn -alg ADAGRAD \
+lomrf wlearn \
+	-alg ADAGRAD \
 	-i theory_cnf.mln \
 	-t ./training/online/ \
 	-o learned.mln \

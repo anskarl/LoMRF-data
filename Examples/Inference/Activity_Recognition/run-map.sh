@@ -1,6 +1,6 @@
 #!/bin/bash
 
-lomrf -infer map \
+lomrf infer -inferType map \
 	-i theory.mln \
 	-e narrative.db \
 	-r map-out.result \

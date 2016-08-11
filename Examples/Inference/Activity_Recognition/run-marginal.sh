@@ -1,6 +1,6 @@
 #!/bin/bash
 
-lomrf -infer marginal \
+lomrf infer -inferType marginal \
 	-i theory.mln \
 	-e narrative.db \
 	-r marginal-out.result \

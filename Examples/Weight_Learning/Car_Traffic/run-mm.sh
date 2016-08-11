@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Weight Learning
-lomrf-wlearn -alg MAX_MARGIN \
+lomrf wlearn \
+	-alg MAX_MARGIN \
 	-i traffic.mln \
 	-t traffic-train.db \
 	-o traffic-learned.mln \
@@ -9,10 +10,11 @@ lomrf-wlearn -alg MAX_MARGIN \
 	-lossAugmented
 
 # Inference
-lomrf -i traffic-learned.mln \
+lomrf infer \
+	-inferType map \
+	-mapType ilp \
+	-i traffic-learned.mln \
 	-r map.result \
 	-e test.db \
-	-infer map \
-	-mapType ilp \
 	-q State/2 \
 	-cwa Obs/1
