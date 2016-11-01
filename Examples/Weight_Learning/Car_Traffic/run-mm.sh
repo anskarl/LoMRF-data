@@ -15,6 +15,6 @@ lomrf infer \
 	-mapType ilp \
 	-i traffic-learned.mln \
 	-r map.result \
-	-e test.db \
+	-e traffic-test.db \
 	-q State/2 \
 	-cwa Obs/1
